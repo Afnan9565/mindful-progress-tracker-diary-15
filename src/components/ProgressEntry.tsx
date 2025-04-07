@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Calendar as CalendarIcon, Book, Check, Edit } from 'lucide-react';
+import { Calendar as CalendarIcon, Book, Check, Edit, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -85,6 +86,11 @@ const ProgressEntry: React.FC = () => {
     setNotes('');
     setShowEntryForm(false);
   };
+
+  const deleteEntry = (id: string) => {
+    setEntries(entries.filter(entry => entry.id !== id));
+    toast.success('Progress entry deleted successfully!');
+  };
   
   return (
     <section className="py-16 px-4 bg-white dark:bg-gray-900">
@@ -98,6 +104,7 @@ const ProgressEntry: React.FC = () => {
           <Button 
             onClick={() => setShowEntryForm(!showEntryForm)}
             className="mt-4 md:mt-0 bg-lavender-500 hover:bg-lavender-600 dark:bg-lavender-600 dark:hover:bg-lavender-700"
+            type="button"
           >
             {showEntryForm ? 'Cancel' : '+ Add Progress Entry'}
           </Button>
@@ -124,6 +131,7 @@ const ProgressEntry: React.FC = () => {
                         <Button
                           variant="outline"
                           className="w-full justify-start text-left dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+                          type="button"
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {selectedDate ? (
@@ -206,10 +214,19 @@ const ProgressEntry: React.FC = () => {
                 </div>
               </CardContent>
               <CardFooter className="justify-end space-x-2">
-                <Button variant="outline" onClick={() => setShowEntryForm(false)} className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowEntryForm(false)} 
+                  className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+                  type="button"
+                >
                   Cancel
                 </Button>
-                <Button onClick={handleSubmit} className="dark:bg-lavender-600 dark:hover:bg-lavender-700">
+                <Button 
+                  onClick={handleSubmit} 
+                  className="dark:bg-lavender-600 dark:hover:bg-lavender-700"
+                  type="button"
+                >
                   <Check className="mr-2 h-4 w-4" /> Save Entry
                 </Button>
               </CardFooter>
@@ -227,6 +244,7 @@ const ProgressEntry: React.FC = () => {
             <Button 
               onClick={() => setShowEntryForm(true)} 
               className="mt-6 bg-lavender-500 hover:bg-lavender-600 dark:bg-lavender-600 dark:hover:bg-lavender-700"
+              type="button"
             >
               + Add Your First Entry
             </Button>
@@ -244,7 +262,18 @@ const ProgressEntry: React.FC = () => {
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-center">
                       <CardTitle className="text-xl dark:text-gray-200">{entry.subjectName}</CardTitle>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">{format(entry.date, "PP")}</span>
+                      <div className="flex items-center">
+                        <span className="text-sm text-gray-500 dark:text-gray-400 mr-2">{format(entry.date, "PP")}</span>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          onClick={() => deleteEntry(entry.id)} 
+                          className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
+                          type="button"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -266,7 +295,12 @@ const ProgressEntry: React.FC = () => {
                         </div>
                       </div>
                       <div className="md:text-right">
-                        <Button variant="outline" size="sm" className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+                          type="button"
+                        >
                           <Edit className="h-4 w-4 mr-1" /> Edit
                         </Button>
                       </div>

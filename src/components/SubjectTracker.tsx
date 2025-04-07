@@ -20,7 +20,7 @@ import {
   DialogTrigger 
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Plus, Edit, Book } from 'lucide-react';
+import { Plus, Edit, Book, Trash2 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/lib/toast';
@@ -50,7 +50,7 @@ const COLORS = [
 const MILESTONES_STORAGE_KEY = 'mindful_progress_milestones';
 
 const SubjectTracker: React.FC = () => {
-  const { subjects: contextSubjects, addSubject: addContextSubject } = useSubjects();
+  const { subjects: contextSubjects, addSubject: addContextSubject, removeSubject: removeContextSubject } = useSubjects();
   
   const loadMilestones = () => {
     const savedMilestones = localStorage.getItem(MILESTONES_STORAGE_KEY);
@@ -117,6 +117,12 @@ const SubjectTracker: React.FC = () => {
     }
   };
 
+  const deleteSubject = (subjectId: string) => {
+    setSubjects(subjects.filter(subject => subject.id !== subjectId));
+    removeContextSubject(subjectId);
+    toast.success('Subject deleted successfully!');
+  };
+
   const addMilestone = (subjectId: string) => {
     if (newMilestone.text && subjectId) {
       const updatedSubjects = subjects.map(subject => {
@@ -139,6 +145,20 @@ const SubjectTracker: React.FC = () => {
       setIsAddingMilestone(false);
       toast.success('Milestone added!');
     }
+  };
+
+  const deleteMilestone = (subjectId: string, milestoneId: string) => {
+    const updatedSubjects = subjects.map(subject => {
+      if (subject.id === subjectId) {
+        return {
+          ...subject,
+          milestones: subject.milestones.filter(milestone => milestone.id !== milestoneId),
+        };
+      }
+      return subject;
+    });
+    setSubjects(updatedSubjects);
+    toast.success('Milestone deleted!');
   };
 
   const toggleMilestoneCompletion = (subjectId: string, milestoneId: string) => {
@@ -254,12 +274,21 @@ const SubjectTracker: React.FC = () => {
               >
                 <Card className="card-shadow h-full dark:bg-gray-800 dark:border-gray-700">
                   <CardHeader className={`pb-2`}>
-                    <CardTitle className="flex justify-between items-center dark:text-gray-200">
-                      <span>{subject.name}</span>
-                      <Badge variant="outline" className={subject.color}>
-                        {subject.milestones.filter(m => m.completed).length}/{subject.milestones.length} Completed
-                      </Badge>
-                    </CardTitle>
+                    <div className="flex justify-between items-center">
+                      <CardTitle className="dark:text-gray-200">{subject.name}</CardTitle>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => deleteSubject(subject.id)} 
+                        className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
+                        type="button"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <Badge variant="outline" className={subject.color}>
+                      {subject.milestones.filter(m => m.completed).length}/{subject.milestones.length} Completed
+                    </Badge>
                     <CardDescription className="dark:text-gray-400">{subject.description}</CardDescription>
                   </CardHeader>
                   
@@ -289,6 +318,15 @@ const SubjectTracker: React.FC = () => {
                                 Added on {milestone.date.toLocaleDateString()}
                               </div>
                             </div>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              onClick={() => deleteMilestone(subject.id, milestone.id)} 
+                              className="text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400"
+                              type="button"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </li>
                         ))}
                       </ul>
@@ -308,6 +346,7 @@ const SubjectTracker: React.FC = () => {
                             disabled={!newMilestone.text}
                             size="sm"
                             className="dark:bg-lavender-600 dark:hover:bg-lavender-700"
+                            type="button"
                           >
                             Add
                           </Button>
@@ -319,6 +358,7 @@ const SubjectTracker: React.FC = () => {
                             }}
                             size="sm"
                             className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+                            type="button"
                           >
                             Cancel
                           </Button>
@@ -337,12 +377,18 @@ const SubjectTracker: React.FC = () => {
                           setNewMilestone({ subjectId: subject.id, text: '' });
                         }}
                         className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+                        type="button"
                       >
                         <Plus className="h-4 w-4 mr-1" /> Add Milestone
                       </Button>
                     ) : null}
                     
-                    <Button variant="ghost" size="sm" className="dark:text-gray-300 dark:hover:bg-gray-700">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="dark:text-gray-300 dark:hover:bg-gray-700"
+                      type="button"
+                    >
                       <Edit className="h-4 w-4 mr-1" /> Edit Subject
                     </Button>
                   </CardFooter>
