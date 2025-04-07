@@ -12,7 +12,9 @@ const Index = () => {
       <HeroSection />
       
       {/* Exam Countdown Section */}
-      <CountdownTracker />
+      <div id="countdown">
+        <CountdownTracker />
+      </div>
       
       {/* Subject Tracker Section */}
       <SubjectTracker />
