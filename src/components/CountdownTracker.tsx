@@ -26,6 +26,7 @@ const CountdownTracker: React.FC = () => {
   const [newExamName, setNewExamName] = useState('');
   const [newExamDate, setNewExamDate] = useState<Date | undefined>(undefined);
   const [isAddingExam, setIsAddingExam] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const addExam = () => {
     if (newExamName && newExamDate) {
@@ -54,6 +55,7 @@ const CountdownTracker: React.FC = () => {
 
   const handleDateSelect = (date: Date | undefined) => {
     setNewExamDate(date);
+    setIsCalendarOpen(false);
   };
 
   return (
@@ -88,9 +90,13 @@ const CountdownTracker: React.FC = () => {
                 />
               </div>
               
-              <Popover>
+              <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="min-w-[180px] justify-start dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300">
+                  <Button 
+                    variant="outline" 
+                    className="min-w-[180px] justify-start dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+                    onClick={() => setIsCalendarOpen(true)}
+                  >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {newExamDate ? (
                       format(newExamDate, "PPP")
@@ -99,7 +105,7 @@ const CountdownTracker: React.FC = () => {
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent className="w-auto p-0 z-50" align="start">
                   <Calendar
                     mode="single"
                     selected={newExamDate}
