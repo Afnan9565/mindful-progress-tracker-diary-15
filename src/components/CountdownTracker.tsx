@@ -71,12 +71,13 @@ const CountdownTracker: React.FC = () => {
             <Button 
               onClick={() => setIsAddingExam(true)} 
               className="mt-4 md:mt-0 bg-lavender-500 hover:bg-lavender-600 dark:bg-lavender-600 dark:hover:bg-lavender-700"
+              type="button"
             >
               <Plus className="mr-2 h-4 w-4" /> Add Exam
             </Button>
           ) : (
             <motion.div 
-              className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-2 items-end"
+              className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-2 items-end z-10"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
@@ -95,7 +96,7 @@ const CountdownTracker: React.FC = () => {
                   <Button 
                     variant="outline" 
                     className="min-w-[180px] justify-start dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
-                    onClick={() => setIsCalendarOpen(true)}
+                    type="button"
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {newExamDate ? (
@@ -105,7 +106,7 @@ const CountdownTracker: React.FC = () => {
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 z-50" align="start">
+                <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
                     selected={newExamDate}
@@ -120,6 +121,7 @@ const CountdownTracker: React.FC = () => {
                 onClick={addExam} 
                 disabled={!newExamName || !newExamDate} 
                 className="dark:bg-lavender-600 dark:hover:bg-lavender-700"
+                type="button"
               >
                 <Check className="h-4 w-4" />
               </Button>
@@ -127,6 +129,7 @@ const CountdownTracker: React.FC = () => {
                 variant="outline" 
                 onClick={() => setIsAddingExam(false)} 
                 className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+                type="button"
               >
                 Cancel
               </Button>

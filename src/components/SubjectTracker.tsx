@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -167,11 +168,14 @@ const SubjectTracker: React.FC = () => {
           
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="mt-4 md:mt-0 bg-lavender-500 hover:bg-lavender-600 dark:bg-lavender-600 dark:hover:bg-lavender-700">
+              <Button 
+                type="button"
+                className="mt-4 md:mt-0 bg-lavender-500 hover:bg-lavender-600 dark:bg-lavender-600 dark:hover:bg-lavender-700"
+              >
                 <Plus className="mr-2 h-4 w-4" /> Add Subject
               </Button>
             </DialogTrigger>
-            <DialogContent className="dark:bg-gray-800 dark:border-gray-700">
+            <DialogContent className="dark:bg-gray-800 dark:border-gray-700 z-50">
               <DialogHeader>
                 <DialogTitle className="dark:text-gray-200">Add New Subject</DialogTitle>
                 <DialogDescription className="dark:text-gray-400">
@@ -203,8 +207,22 @@ const SubjectTracker: React.FC = () => {
               </div>
               
               <DialogFooter>
-                <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">Cancel</Button>
-                <Button onClick={addSubject} disabled={!newSubject.name} className="dark:bg-lavender-600 dark:hover:bg-lavender-700">Add Subject</Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setIsDialogOpen(false)} 
+                  className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="button"
+                  onClick={addSubject} 
+                  disabled={!newSubject.name} 
+                  className="dark:bg-lavender-600 dark:hover:bg-lavender-700"
+                >
+                  Add Subject
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -218,6 +236,7 @@ const SubjectTracker: React.FC = () => {
               Start by adding your first subject to track your milestones and progress
             </p>
             <Button 
+              type="button"
               onClick={() => setIsDialogOpen(true)} 
               className="mt-6 bg-lavender-500 hover:bg-lavender-600 dark:bg-lavender-600 dark:hover:bg-lavender-700"
             >
