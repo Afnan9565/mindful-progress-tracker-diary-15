@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface Subject {
   id: string;
@@ -24,8 +24,28 @@ export const useSubjects = (): SubjectContextType => {
   return context;
 };
 
+const LOCAL_STORAGE_KEY = 'studyTrackerSubjects';
+
 export const SubjectProvider = ({ children }: { children: React.ReactNode }) => {
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+  // Initialize state from localStorage if available
+  const [subjects, setSubjects] = useState<Subject[]>(() => {
+    try {
+      const storedSubjects = localStorage.getItem(LOCAL_STORAGE_KEY);
+      return storedSubjects ? JSON.parse(storedSubjects) : [];
+    } catch (error) {
+      console.error('Error loading subjects from localStorage:', error);
+      return [];
+    }
+  });
+
+  // Save to localStorage whenever subjects change
+  useEffect(() => {
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(subjects));
+    } catch (error) {
+      console.error('Error saving subjects to localStorage:', error);
+    }
+  }, [subjects]);
 
   const addSubject = (subject: Subject) => {
     setSubjects((prevSubjects) => [...prevSubjects, subject]);
