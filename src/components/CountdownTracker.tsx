@@ -1,0 +1,160 @@
+
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { format, differenceInDays, differenceInHours, differenceInMinutes } from 'date-fns';
+import { Calendar as CalendarIcon, Plus, Check } from 'lucide-react';
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger, 
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+
+interface Exam {
+  id: string;
+  name: string;
+  date: Date;
+}
+
+const CountdownTracker: React.FC = () => {
+  const [exams, setExams] = useState<Exam[]>([]);
+  const [newExamName, setNewExamName] = useState('');
+  const [newExamDate, setNewExamDate] = useState<Date | undefined>(undefined);
+  const [isAddingExam, setIsAddingExam] = useState(false);
+
+  const addExam = () => {
+    if (newExamName && newExamDate) {
+      const newExam: Exam = {
+        id: Date.now().toString(),
+        name: newExamName,
+        date: newExamDate,
+      };
+      setExams([...exams, newExam]);
+      setNewExamName('');
+      setNewExamDate(undefined);
+      setIsAddingExam(false);
+    }
+  };
+
+  const getCountdown = (date: Date) => {
+    const now = new Date();
+    const days = differenceInDays(date, now);
+    const hours = differenceInHours(date, now) % 24;
+    const minutes = differenceInMinutes(date, now) % 60;
+
+    if (days < 0) return 'Exam has passed';
+    return `${days}d ${hours}h ${minutes}m`;
+  };
+
+  return (
+    <section className="py-12 px-4 bg-white">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+          <div>
+            <h2 className="text-3xl font-bold gradient-text">Exam Countdowns</h2>
+            <p className="text-gray-600 mt-2">Keep track of your upcoming exams</p>
+          </div>
+          
+          {!isAddingExam ? (
+            <Button 
+              onClick={() => setIsAddingExam(true)} 
+              className="mt-4 md:mt-0 bg-lavender-500 hover:bg-lavender-600"
+            >
+              <Plus className="mr-2 h-4 w-4" /> Add Exam
+            </Button>
+          ) : (
+            <motion.div 
+              className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-2 items-end"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex-1">
+                <Input
+                  placeholder="Exam name"
+                  value={newExamName}
+                  onChange={(e) => setNewExamName(e.target.value)}
+                  className="input-focus"
+                />
+              </div>
+              
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="min-w-[180px] justify-start">
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {newExamDate ? (
+                      format(newExamDate, "PPP")
+                    ) : (
+                      <span>Select date</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={newExamDate}
+                    onSelect={setNewExamDate}
+                    initialFocus
+                    className="p-3 pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
+              
+              <Button onClick={addExam} disabled={!newExamName || !newExamDate}>
+                <Check className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" onClick={() => setIsAddingExam(false)}>
+                Cancel
+              </Button>
+            </motion.div>
+          )}
+        </div>
+        
+        {exams.length === 0 ? (
+          <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-lg">
+            <p className="text-gray-500">No exams added yet. Add your first exam to start tracking!</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {exams.map((exam) => (
+              <motion.div 
+                key={exam.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Card className="card-hover card-shadow overflow-hidden border-t-4 border-t-lavender-500">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-xl font-bold">{exam.name}</CardTitle>
+                    <p className="text-sm text-gray-500">{format(exam.date, "PPP")}</p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="mt-2">
+                      <div className="text-3xl font-bold text-lavender-600">
+                        {getCountdown(exam.date)}
+                      </div>
+                      <div className="mt-4 w-full bg-gray-200 rounded-full h-2.5">
+                        <div 
+                          className="bg-gradient-to-r from-lavender-400 to-lavender-600 h-2.5 rounded-full" 
+                          style={{ 
+                            width: `${Math.max(0, Math.min(100, 100 - (differenceInDays(exam.date, new Date()) / 30) * 100))}%` 
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+export default CountdownTracker;

@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,35 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				lavender: {
+					50: '#f5f3ff',
+					100: '#ede9fe',
+					200: '#ddd6fe',
+					300: '#c4b5fd',
+					400: '#a78bfa',
+					500: '#9b87f5',
+					600: '#7c3aed',
+					700: '#6d28d9',
+					800: '#5b21b6',
+					900: '#4c1d95',
+				},
+				softBlue: {
+					50: '#f0f7ff',
+					100: '#e0effe',
+					200: '#d3e4fd',
+					300: '#a5c8fa',
+					400: '#7aabf7',
+					500: '#5390f3',
+					600: '#3172e8',
+					700: '#2563eb',
+					800: '#1d4ed8',
+					900: '#1e40af',
 				}
+			},
+			fontFamily: {
+				sans: ['Inter', 'sans-serif'],
+				serif: ['Georgia', 'serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -70,25 +99,27 @@ export default {
 			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' }
+				},
+				'fade-in': {
+					'0%': { opacity: '0', transform: 'translateY(10px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				'slide-in': {
+					'0%': { transform: 'translateX(-20px)', opacity: '0' },
+					'100%': { transform: 'translateX(0)', opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.3s ease-out',
+				'slide-in': 'slide-in 0.3s ease-out'
 			}
 		}
 	},
