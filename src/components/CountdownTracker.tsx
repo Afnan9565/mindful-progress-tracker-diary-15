@@ -51,18 +51,18 @@ const CountdownTracker: React.FC = () => {
   };
 
   return (
-    <section className="py-12 px-4 bg-white">
+    <section className="py-12 px-4 bg-white dark:bg-gray-900">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
             <h2 className="text-3xl font-bold gradient-text">Exam Countdowns</h2>
-            <p className="text-gray-600 mt-2">Keep track of your upcoming exams</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">Keep track of your upcoming exams</p>
           </div>
           
           {!isAddingExam ? (
             <Button 
               onClick={() => setIsAddingExam(true)} 
-              className="mt-4 md:mt-0 bg-lavender-500 hover:bg-lavender-600"
+              className="mt-4 md:mt-0 bg-lavender-500 hover:bg-lavender-600 dark:bg-lavender-600 dark:hover:bg-lavender-700"
             >
               <Plus className="mr-2 h-4 w-4" /> Add Exam
             </Button>
@@ -78,13 +78,13 @@ const CountdownTracker: React.FC = () => {
                   placeholder="Exam name"
                   value={newExamName}
                   onChange={(e) => setNewExamName(e.target.value)}
-                  className="input-focus"
+                  className="input-focus dark:bg-gray-800 dark:border-gray-700"
                 />
               </div>
               
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="min-w-[180px] justify-start">
+                  <Button variant="outline" className="min-w-[180px] justify-start dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300">
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {newExamDate ? (
                       format(newExamDate, "PPP")
@@ -104,10 +104,10 @@ const CountdownTracker: React.FC = () => {
                 </PopoverContent>
               </Popover>
               
-              <Button onClick={addExam} disabled={!newExamName || !newExamDate}>
+              <Button onClick={addExam} disabled={!newExamName || !newExamDate} className="dark:bg-lavender-600 dark:hover:bg-lavender-700">
                 <Check className="h-4 w-4" />
               </Button>
-              <Button variant="outline" onClick={() => setIsAddingExam(false)}>
+              <Button variant="outline" onClick={() => setIsAddingExam(false)} className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300">
                 Cancel
               </Button>
             </motion.div>
@@ -115,8 +115,8 @@ const CountdownTracker: React.FC = () => {
         </div>
         
         {exams.length === 0 ? (
-          <div className="text-center py-12 border-2 border-dashed border-gray-200 rounded-lg">
-            <p className="text-gray-500">No exams added yet. Add your first exam to start tracking!</p>
+          <div className="text-center py-12 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg dark:text-gray-400">
+            <p className="text-gray-500 dark:text-gray-400">No exams added yet. Add your first exam to start tracking!</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -127,19 +127,19 @@ const CountdownTracker: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="card-hover card-shadow overflow-hidden border-t-4 border-t-lavender-500">
+                <Card className="card-hover card-shadow overflow-hidden border-t-4 border-t-lavender-500 dark:bg-gray-800 dark:border-gray-700 dark:border-t-lavender-500">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-xl font-bold">{exam.name}</CardTitle>
-                    <p className="text-sm text-gray-500">{format(exam.date, "PPP")}</p>
+                    <CardTitle className="text-xl font-bold dark:text-gray-200">{exam.name}</CardTitle>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{format(exam.date, "PPP")}</p>
                   </CardHeader>
                   <CardContent>
                     <div className="mt-2">
-                      <div className="text-3xl font-bold text-lavender-600">
+                      <div className="text-3xl font-bold text-lavender-600 dark:text-lavender-400">
                         {getCountdown(exam.date)}
                       </div>
-                      <div className="mt-4 w-full bg-gray-200 rounded-full h-2.5">
+                      <div className="mt-4 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
                         <div 
-                          className="bg-gradient-to-r from-lavender-400 to-lavender-600 h-2.5 rounded-full" 
+                          className="bg-gradient-to-r from-lavender-400 to-lavender-600 dark:from-lavender-500 dark:to-lavender-700 h-2.5 rounded-full" 
                           style={{ 
                             width: `${Math.max(0, Math.min(100, 100 - (differenceInDays(exam.date, new Date()) / 30) * 100))}%` 
                           }}

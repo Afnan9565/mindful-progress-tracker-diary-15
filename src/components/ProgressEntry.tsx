@@ -93,17 +93,17 @@ const ProgressEntry: React.FC = () => {
   };
   
   return (
-    <section className="py-16 px-4 bg-white">
+    <section className="py-16 px-4 bg-white dark:bg-gray-900">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
           <div>
             <h2 className="text-3xl font-bold gradient-text">Daily Progress</h2>
-            <p className="text-gray-600 mt-2">Track your daily study progress</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">Track your daily study progress</p>
           </div>
           
           <Button 
             onClick={() => setShowEntryForm(!showEntryForm)}
-            className="mt-4 md:mt-0 bg-lavender-500 hover:bg-lavender-600"
+            className="mt-4 md:mt-0 bg-lavender-500 hover:bg-lavender-600 dark:bg-lavender-600 dark:hover:bg-lavender-700"
           >
             {showEntryForm ? 'Cancel' : '+ Add Progress Entry'}
           </Button>
@@ -116,20 +116,20 @@ const ProgressEntry: React.FC = () => {
             transition={{ duration: 0.3 }}
             className="mb-12"
           >
-            <Card>
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
               <CardHeader>
-                <CardTitle>Add New Progress Entry</CardTitle>
-                <CardDescription>Record your study progress for today</CardDescription>
+                <CardTitle className="dark:text-gray-200">Add New Progress Entry</CardTitle>
+                <CardDescription className="dark:text-gray-400">Record your study progress for today</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="date">Date</Label>
+                    <Label htmlFor="date" className="dark:text-gray-300">Date</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          className="w-full justify-start text-left"
+                          className="w-full justify-start text-left dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {selectedDate ? (
@@ -152,17 +152,17 @@ const ProgressEntry: React.FC = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="subject">Subject</Label>
+                    <Label htmlFor="subject" className="dark:text-gray-300">Subject</Label>
                     <Select 
                       value={selectedSubject} 
                       onValueChange={setSelectedSubject}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
                         <SelectValue placeholder="Select a subject" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
                         {subjects.map((subject) => (
-                          <SelectItem key={subject.id} value={subject.id}>
+                          <SelectItem key={subject.id} value={subject.id} className="dark:text-gray-200 dark:focus:bg-gray-700">
                             {subject.name}
                           </SelectItem>
                         ))}
@@ -171,7 +171,7 @@ const ProgressEntry: React.FC = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="hours">Hours Spent</Label>
+                    <Label htmlFor="hours" className="dark:text-gray-300">Hours Spent</Label>
                     <div className="flex items-center space-x-2">
                       <Input
                         id="hours"
@@ -180,14 +180,14 @@ const ProgressEntry: React.FC = () => {
                         max={24}
                         value={hoursSpent}
                         onChange={(e) => setHoursSpent(Number(e.target.value))}
-                        className="w-20"
+                        className="w-20 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
                       />
-                      <span className="text-gray-500">hours</span>
+                      <span className="text-gray-500 dark:text-gray-400">hours</span>
                     </div>
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="progress">Progress Made ({progressPercentage}%)</Label>
+                    <Label htmlFor="progress" className="dark:text-gray-300">Progress Made ({progressPercentage}%)</Label>
                     <Slider
                       id="progress"
                       min={0}
@@ -200,22 +200,22 @@ const ProgressEntry: React.FC = () => {
                   </div>
                   
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="notes">Notes</Label>
+                    <Label htmlFor="notes" className="dark:text-gray-300">Notes</Label>
                     <Textarea
                       id="notes"
                       placeholder="What did you accomplish today? Any challenges?"
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      className="min-h-[100px] resize-none"
+                      className="min-h-[100px] resize-none dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
                     />
                   </div>
                 </div>
               </CardContent>
               <CardFooter className="justify-end space-x-2">
-                <Button variant="outline" onClick={() => setShowEntryForm(false)}>
+                <Button variant="outline" onClick={() => setShowEntryForm(false)} className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
                   Cancel
                 </Button>
-                <Button onClick={handleSubmit}>
+                <Button onClick={handleSubmit} className="dark:bg-lavender-600 dark:hover:bg-lavender-700">
                   <Check className="mr-2 h-4 w-4" /> Save Entry
                 </Button>
               </CardFooter>
@@ -224,15 +224,15 @@ const ProgressEntry: React.FC = () => {
         )}
         
         {entries.length === 0 ? (
-          <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-lg">
-            <Book className="mx-auto h-12 w-12 text-gray-300" />
-            <h3 className="mt-4 text-lg font-medium text-gray-700">No progress entries yet</h3>
-            <p className="text-gray-500 max-w-sm mx-auto mt-2">
+          <div className="text-center py-16 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg">
+            <Book className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" />
+            <h3 className="mt-4 text-lg font-medium text-gray-700 dark:text-gray-300">No progress entries yet</h3>
+            <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto mt-2">
               At the end of each study day, record your progress to keep track of your journey
             </p>
             <Button 
               onClick={() => setShowEntryForm(true)} 
-              className="mt-6 bg-lavender-500 hover:bg-lavender-600"
+              className="mt-6 bg-lavender-500 hover:bg-lavender-600 dark:bg-lavender-600 dark:hover:bg-lavender-700"
             >
               + Add Your First Entry
             </Button>
@@ -246,33 +246,33 @@ const ProgressEntry: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
-                <Card className="card-hover">
+                <Card className="card-hover dark:bg-gray-800 dark:border-gray-700">
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-center">
-                      <CardTitle className="text-xl">{entry.subjectName}</CardTitle>
-                      <span className="text-sm text-gray-500">{format(entry.date, "PP")}</span>
+                      <CardTitle className="text-xl dark:text-gray-200">{entry.subjectName}</CardTitle>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">{format(entry.date, "PP")}</span>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                       <div>
-                        <h4 className="text-sm font-medium text-gray-500">Hours Spent</h4>
-                        <p className="text-2xl font-bold">{entry.hoursSpent}h</p>
+                        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Hours Spent</h4>
+                        <p className="text-2xl font-bold dark:text-gray-200">{entry.hoursSpent}h</p>
                       </div>
                       <div>
-                        <h4 className="text-sm font-medium text-gray-500">Progress</h4>
+                        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Progress</h4>
                         <div className="flex items-center space-x-2">
-                          <div className="w-full bg-gray-200 rounded-full h-2.5">
+                          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
                             <div 
-                              className="bg-gradient-to-r from-lavender-400 to-lavender-600 h-2.5 rounded-full" 
+                              className="bg-gradient-to-r from-lavender-400 to-lavender-600 dark:from-lavender-500 dark:to-lavender-700 h-2.5 rounded-full" 
                               style={{ width: `${entry.progressPercentage}%` }}
                             ></div>
                           </div>
-                          <span className="text-sm font-medium">{entry.progressPercentage}%</span>
+                          <span className="text-sm font-medium dark:text-gray-300">{entry.progressPercentage}%</span>
                         </div>
                       </div>
                       <div className="md:text-right">
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600">
                           <Edit className="h-4 w-4 mr-1" /> Edit
                         </Button>
                       </div>
@@ -280,8 +280,8 @@ const ProgressEntry: React.FC = () => {
                     
                     {entry.notes && (
                       <div className="mt-4">
-                        <h4 className="text-sm font-medium text-gray-500 mb-1">Notes</h4>
-                        <p className="text-gray-600">{entry.notes}</p>
+                        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Notes</h4>
+                        <p className="text-gray-600 dark:text-gray-300">{entry.notes}</p>
                       </div>
                     )}
                   </CardContent>
