@@ -13,6 +13,7 @@ import {
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { toast } from '@/lib/toast';
 
 interface Exam {
   id: string;
@@ -37,6 +38,7 @@ const CountdownTracker: React.FC = () => {
       setNewExamName('');
       setNewExamDate(undefined);
       setIsAddingExam(false);
+      toast.success('Exam added successfully!');
     }
   };
 
@@ -48,6 +50,10 @@ const CountdownTracker: React.FC = () => {
 
     if (days < 0) return 'Exam has passed';
     return `${days}d ${hours}h ${minutes}m`;
+  };
+
+  const handleDateSelect = (date: Date | undefined) => {
+    setNewExamDate(date);
   };
 
   return (
@@ -93,21 +99,29 @@ const CountdownTracker: React.FC = () => {
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
+                <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
                     selected={newExamDate}
-                    onSelect={setNewExamDate}
+                    onSelect={handleDateSelect}
                     initialFocus
                     className="p-3 pointer-events-auto"
                   />
                 </PopoverContent>
               </Popover>
               
-              <Button onClick={addExam} disabled={!newExamName || !newExamDate} className="dark:bg-lavender-600 dark:hover:bg-lavender-700">
+              <Button 
+                onClick={addExam} 
+                disabled={!newExamName || !newExamDate} 
+                className="dark:bg-lavender-600 dark:hover:bg-lavender-700"
+              >
                 <Check className="h-4 w-4" />
               </Button>
-              <Button variant="outline" onClick={() => setIsAddingExam(false)} className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsAddingExam(false)} 
+                className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300"
+              >
                 Cancel
               </Button>
             </motion.div>
