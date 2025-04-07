@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState } from 'react';
 
 export interface Subject {
@@ -9,6 +10,7 @@ export interface Subject {
 interface SubjectContextType {
   subjects: Subject[];
   addSubject: (subject: Subject) => void;
+  updateSubject: (id: string, updatedSubject: Partial<Subject>) => void;
   removeSubject: (subjectId: string) => void;
 }
 
@@ -29,12 +31,20 @@ export const SubjectProvider = ({ children }: { children: React.ReactNode }) => 
     setSubjects((prevSubjects) => [...prevSubjects, subject]);
   };
 
+  const updateSubject = (id: string, updatedSubject: Partial<Subject>) => {
+    setSubjects((prevSubjects) => 
+      prevSubjects.map((subject) => 
+        subject.id === id ? { ...subject, ...updatedSubject } : subject
+      )
+    );
+  };
+
   const removeSubject = (subjectId: string) => {
     setSubjects((prevSubjects) => prevSubjects.filter(subject => subject.id !== subjectId));
   };
 
   return (
-    <SubjectContext.Provider value={{ subjects, addSubject, removeSubject }}>
+    <SubjectContext.Provider value={{ subjects, addSubject, updateSubject, removeSubject }}>
       {children}
     </SubjectContext.Provider>
   );

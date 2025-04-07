@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -50,7 +49,7 @@ const COLORS = [
 const MILESTONES_STORAGE_KEY = 'mindful_progress_milestones';
 
 const SubjectTracker: React.FC = () => {
-  const { subjects: contextSubjects, addSubject: addContextSubject, removeSubject: removeContextSubject } = useSubjects();
+  const { subjects: contextSubjects, addSubject: addContextSubject, updateSubject: updateContextSubject, removeSubject: removeContextSubject } = useSubjects();
   
   const loadMilestones = () => {
     const savedMilestones = localStorage.getItem(MILESTONES_STORAGE_KEY);
@@ -69,9 +68,11 @@ const SubjectTracker: React.FC = () => {
 
   const [subjects, setSubjects] = useState<ExtendedSubject[]>(() => loadMilestones());
   const [newSubject, setNewSubject] = useState({ name: '', description: '' });
+  const [editingSubject, setEditingSubject] = useState<{id: string, name: string, description: string} | null>(null);
   const [newMilestone, setNewMilestone] = useState({ subjectId: '', text: '' });
   const [isAddingMilestone, setIsAddingMilestone] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   React.useEffect(() => {
     if (subjects.length === 0 && contextSubjects.length > 0) {
@@ -121,6 +122,41 @@ const SubjectTracker: React.FC = () => {
     setSubjects(subjects.filter(subject => subject.id !== subjectId));
     removeContextSubject(subjectId);
     toast.success('Subject deleted successfully!');
+  };
+
+  const openEditDialog = (subject: ExtendedSubject) => {
+    setEditingSubject({
+      id: subject.id,
+      name: subject.name,
+      description: subject.description || '',
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const updateSubject = () => {
+    if (editingSubject && editingSubject.name) {
+      const updatedSubjects = subjects.map(subject => {
+        if (subject.id === editingSubject.id) {
+          return {
+            ...subject,
+            name: editingSubject.name,
+            description: editingSubject.description,
+          };
+        }
+        return subject;
+      });
+      
+      setSubjects(updatedSubjects);
+      
+      updateContextSubject(editingSubject.id, {
+        name: editingSubject.name,
+        description: editingSubject.description,
+      });
+      
+      setIsEditDialogOpen(false);
+      setEditingSubject(null);
+      toast.success('Subject updated successfully!');
+    }
   };
 
   const addMilestone = (subjectId: string) => {
@@ -387,6 +423,7 @@ const SubjectTracker: React.FC = () => {
                       variant="ghost" 
                       size="sm" 
                       className="dark:text-gray-300 dark:hover:bg-gray-700"
+                      onClick={() => openEditDialog(subject)}
                       type="button"
                     >
                       <Edit className="h-4 w-4 mr-1" /> Edit Subject
@@ -398,6 +435,62 @@ const SubjectTracker: React.FC = () => {
           </div>
         )}
       </div>
+      
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="dark:bg-gray-800 dark:border-gray-700 z-50">
+          <DialogHeader>
+            <DialogTitle className="dark:text-gray-200">Edit Subject</DialogTitle>
+            <DialogDescription className="dark:text-gray-400">
+              Update subject details
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="edit-subject-name" className="dark:text-gray-300">Subject Name</Label>
+              <Input
+                id="edit-subject-name"
+                placeholder="Enter subject name"
+                value={editingSubject?.name || ''}
+                onChange={(e) => setEditingSubject(prev => prev ? {...prev, name: e.target.value} : null)}
+                className="input-focus dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="edit-subject-description" className="dark:text-gray-300">Description</Label>
+              <Textarea
+                id="edit-subject-description"
+                placeholder="Brief description of the subject"
+                value={editingSubject?.description || ''}
+                onChange={(e) => setEditingSubject(prev => prev ? {...prev, description: e.target.value} : null)}
+                className="resize-none input-focus dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+              />
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => {
+                setIsEditDialogOpen(false);
+                setEditingSubject(null);
+              }} 
+              className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="button"
+              onClick={updateSubject} 
+              disabled={!editingSubject?.name} 
+              className="dark:bg-lavender-600 dark:hover:bg-lavender-700"
+            >
+              Update Subject
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
