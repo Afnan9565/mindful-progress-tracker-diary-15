@@ -25,20 +25,18 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/lib/toast';
 import { motion } from 'framer-motion';
-
-interface Subject {
-  id: string;
-  name: string;
-  description: string;
-  milestones: Milestone[];
-  color: string;
-}
+import { useSubjects, Subject } from '@/contexts/SubjectContext';
 
 interface Milestone {
   id: string;
   text: string;
   date: Date;
   completed: boolean;
+}
+
+interface ExtendedSubject extends Subject {
+  milestones: Milestone[];
+  color: string;
 }
 
 const COLORS = [
@@ -50,23 +48,49 @@ const COLORS = [
 ];
 
 const SubjectTracker: React.FC = () => {
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const { subjects: contextSubjects, addSubject: addContextSubject } = useSubjects();
+  const [subjects, setSubjects] = useState<ExtendedSubject[]>([]);
   const [newSubject, setNewSubject] = useState({ name: '', description: '' });
   const [newMilestone, setNewMilestone] = useState({ subjectId: '', text: '' });
   const [isAddingMilestone, setIsAddingMilestone] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  // Initialize extended subjects from context subjects if needed
+  React.useEffect(() => {
+    if (subjects.length === 0 && contextSubjects.length > 0) {
+      const extendedSubjects = contextSubjects.map((subject, index) => ({
+        ...subject,
+        milestones: [],
+        color: COLORS[index % COLORS.length],
+      }));
+      setSubjects(extendedSubjects);
+    }
+  }, [contextSubjects]);
+
   const addSubject = () => {
     if (newSubject.name) {
       const colorIndex = subjects.length % COLORS.length;
-      const subject: Subject = {
-        id: Date.now().toString(),
+      const subjectId = Date.now().toString();
+      
+      // Create the new subject
+      const extendedSubject: ExtendedSubject = {
+        id: subjectId,
         name: newSubject.name,
         description: newSubject.description,
         milestones: [],
         color: COLORS[colorIndex],
       };
-      setSubjects([...subjects, subject]);
+      
+      // Add to local state
+      setSubjects([...subjects, extendedSubject]);
+      
+      // Add to context state (for sharing with other components)
+      addContextSubject({
+        id: subjectId,
+        name: newSubject.name,
+        description: newSubject.description,
+      });
+      
       setNewSubject({ name: '', description: '' });
       setIsDialogOpen(false);
       toast.success('Subject added successfully!');

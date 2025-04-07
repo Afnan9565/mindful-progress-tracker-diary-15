@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,6 +30,7 @@ import { Slider } from '@/components/ui/slider';
 import { toast } from '@/lib/toast';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { useSubjects } from '@/contexts/SubjectContext';
 
 interface Subject {
   id: string;
@@ -48,12 +48,7 @@ interface ProgressEntry {
 }
 
 const ProgressEntry: React.FC = () => {
-  // For demo purposes, let's assume we have some subjects
-  const [subjects] = useState<Subject[]>([
-    { id: '1', name: 'Mathematics' },
-    { id: '2', name: 'Physics' },
-    { id: '3', name: 'Computer Science' },
-  ]);
+  const { subjects } = useSubjects();
   
   const [entries, setEntries] = useState<ProgressEntry[]>([]);
   const [showEntryForm, setShowEntryForm] = useState(false);
@@ -84,7 +79,6 @@ const ProgressEntry: React.FC = () => {
     setEntries([...entries, newEntry]);
     toast.success('Progress entry added successfully!');
     
-    // Reset form
     setSelectedSubject('');
     setHoursSpent(1);
     setProgressPercentage(50);
