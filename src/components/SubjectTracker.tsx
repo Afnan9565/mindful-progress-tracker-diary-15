@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -47,15 +46,32 @@ const COLORS = [
   'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-900/40 dark:text-rose-300 dark:border-rose-700',
 ];
 
+const MILESTONES_STORAGE_KEY = 'mindful_progress_milestones';
+
 const SubjectTracker: React.FC = () => {
   const { subjects: contextSubjects, addSubject: addContextSubject } = useSubjects();
-  const [subjects, setSubjects] = useState<ExtendedSubject[]>([]);
+  
+  const loadMilestones = () => {
+    const savedMilestones = localStorage.getItem(MILESTONES_STORAGE_KEY);
+    if (savedMilestones) {
+      const parsedMilestones = JSON.parse(savedMilestones);
+      return parsedMilestones.map((subject: any) => ({
+        ...subject,
+        milestones: subject.milestones.map((milestone: any) => ({
+          ...milestone,
+          date: new Date(milestone.date)
+        }))
+      }));
+    }
+    return [];
+  };
+
+  const [subjects, setSubjects] = useState<ExtendedSubject[]>(() => loadMilestones());
   const [newSubject, setNewSubject] = useState({ name: '', description: '' });
   const [newMilestone, setNewMilestone] = useState({ subjectId: '', text: '' });
   const [isAddingMilestone, setIsAddingMilestone] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  // Initialize extended subjects from context subjects if needed
   React.useEffect(() => {
     if (subjects.length === 0 && contextSubjects.length > 0) {
       const extendedSubjects = contextSubjects.map((subject, index) => ({
@@ -67,12 +83,17 @@ const SubjectTracker: React.FC = () => {
     }
   }, [contextSubjects]);
 
+  React.useEffect(() => {
+    if (subjects.length > 0) {
+      localStorage.setItem(MILESTONES_STORAGE_KEY, JSON.stringify(subjects));
+    }
+  }, [subjects]);
+
   const addSubject = () => {
     if (newSubject.name) {
       const colorIndex = subjects.length % COLORS.length;
       const subjectId = Date.now().toString();
       
-      // Create the new subject
       const extendedSubject: ExtendedSubject = {
         id: subjectId,
         name: newSubject.name,
@@ -81,10 +102,8 @@ const SubjectTracker: React.FC = () => {
         color: COLORS[colorIndex],
       };
       
-      // Add to local state
       setSubjects([...subjects, extendedSubject]);
       
-      // Add to context state (for sharing with other components)
       addContextSubject({
         id: subjectId,
         name: newSubject.name,
@@ -142,7 +161,7 @@ const SubjectTracker: React.FC = () => {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
           <div>
-            <h2 className="text-3xl font-bold gradient-text">Subject Milestones</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Subject Milestones</h2>
             <p className="text-gray-600 dark:text-gray-400 mt-2">Track your learning milestones for each subject</p>
           </div>
           
@@ -215,7 +234,7 @@ const SubjectTracker: React.FC = () => {
                 transition={{ duration: 0.4 }}
               >
                 <Card className="card-shadow h-full dark:bg-gray-800 dark:border-gray-700">
-                  <CardHeader className={`pb-2 ${subject.color.split(' ')[0]}`}>
+                  <CardHeader className={`pb-2`}>
                     <CardTitle className="flex justify-between items-center dark:text-gray-200">
                       <span>{subject.name}</span>
                       <Badge variant="outline" className={subject.color}>

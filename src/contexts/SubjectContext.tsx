@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 export interface Subject {
   id: string;
@@ -11,6 +11,7 @@ interface SubjectContextType {
   subjects: Subject[];
   addSubject: (subject: Subject) => void;
   removeSubject: (id: string) => void;
+  updateSubject: (subject: Subject) => void;
 }
 
 const SubjectContext = createContext<SubjectContextType | undefined>(undefined);
@@ -23,12 +24,26 @@ export const useSubjects = () => {
   return context;
 };
 
+// LocalStorage key
+const SUBJECTS_STORAGE_KEY = 'mindful_progress_subjects';
+
 export const SubjectProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [subjects, setSubjects] = useState<Subject[]>([
-    { id: '1', name: 'Mathematics', description: 'Advanced calculus and algebra' },
-    { id: '2', name: 'Physics', description: 'Classical mechanics and thermodynamics' },
-    { id: '3', name: 'Computer Science', description: 'Data structures and algorithms' },
-  ]);
+  // Initialize state from localStorage or use default data
+  const [subjects, setSubjects] = useState<Subject[]>(() => {
+    const savedSubjects = localStorage.getItem(SUBJECTS_STORAGE_KEY);
+    return savedSubjects 
+      ? JSON.parse(savedSubjects) 
+      : [
+          { id: '1', name: 'Mathematics', description: 'Advanced calculus and algebra' },
+          { id: '2', name: 'Physics', description: 'Classical mechanics and thermodynamics' },
+          { id: '3', name: 'Computer Science', description: 'Data structures and algorithms' },
+        ];
+  });
+
+  // Save to localStorage whenever subjects change
+  useEffect(() => {
+    localStorage.setItem(SUBJECTS_STORAGE_KEY, JSON.stringify(subjects));
+  }, [subjects]);
 
   const addSubject = (subject: Subject) => {
     setSubjects((prevSubjects) => [...prevSubjects, subject]);
@@ -38,8 +53,16 @@ export const SubjectProvider: React.FC<{ children: ReactNode }> = ({ children })
     setSubjects((prevSubjects) => prevSubjects.filter((subject) => subject.id !== id));
   };
 
+  const updateSubject = (updatedSubject: Subject) => {
+    setSubjects((prevSubjects) => 
+      prevSubjects.map((subject) => 
+        subject.id === updatedSubject.id ? updatedSubject : subject
+      )
+    );
+  };
+
   return (
-    <SubjectContext.Provider value={{ subjects, addSubject, removeSubject }}>
+    <SubjectContext.Provider value={{ subjects, addSubject, removeSubject, updateSubject }}>
       {children}
     </SubjectContext.Provider>
   );
