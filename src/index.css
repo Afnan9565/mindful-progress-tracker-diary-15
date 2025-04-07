@@ -38,6 +38,36 @@
     --radius: 0.75rem;
   }
 
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 252 77% 70%;
+    --primary-foreground: 252 77% 90%;
+
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 262 83% 58%;
+  }
+
   * {
     @apply border-border;
   }
@@ -49,15 +79,15 @@
   
   /* Custom styles */
   .gradient-text {
-    @apply bg-gradient-to-r from-lavender-600 to-softBlue-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-lavender-600 to-softBlue-600 bg-clip-text text-transparent dark:from-lavender-300 dark:to-softBlue-300;
   }
   
   .card-shadow {
-    @apply shadow-lg shadow-lavender-100/40;
+    @apply shadow-lg shadow-lavender-100/40 dark:shadow-lavender-900/20;
   }
   
   .input-focus {
-    @apply focus:ring-2 focus:ring-lavender-400 focus:border-lavender-400 focus:outline-none;
+    @apply focus:ring-2 focus:ring-lavender-400 focus:border-lavender-400 focus:outline-none dark:focus:ring-lavender-500 dark:focus:border-lavender-500;
   }
 }
 
@@ -67,6 +97,6 @@
   }
   
   .card-hover {
-    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1 dark:hover:shadow-lavender-900/10;
   }
 }

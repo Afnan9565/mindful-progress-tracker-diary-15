@@ -12,10 +12,6 @@ interface HeroSectionProps extends React.HTMLAttributes<HTMLDivElement> {
   description?: string
   ctaText?: string
   ctaHref?: string
-  bottomImage?: {
-    light: string
-    dark: string
-  }
   gridOptions?: {
     angle?: number
     cellSize?: number
@@ -68,10 +64,6 @@ const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
       description = "Take control of your learning journey by monitoring your progress, tracking exam countdowns, and maintaining a personal diary of your achievements as you improve each day.",
       ctaText = "Start Tracking",
       ctaHref = "#countdown",
-      bottomImage = {
-        light: "https://farmui.vercel.app/dashboard-light.png",
-        dark: "https://farmui.vercel.app/dashboard.png",
-      },
       gridOptions,
       ...props
     },
@@ -119,20 +111,6 @@ const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
                 </span>
               </div>
             </div>
-            {bottomImage && (
-              <div className="mt-32 mx-10 relative z-10">
-                <img
-                  src={bottomImage.light}
-                  className="w-full shadow-lg rounded-lg border border-gray-200 dark:hidden"
-                  alt="Dashboard preview"
-                />
-                <img
-                  src={bottomImage.dark}
-                  className="hidden w-full shadow-lg rounded-lg border border-gray-800 dark:block"
-                  alt="Dashboard preview"
-                />
-              </div>
-            )}
           </div>
         </section>
       </div>

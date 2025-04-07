@@ -8,7 +8,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 
 const Index = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background text-foreground dark:bg-gray-950 dark:text-gray-100">
       {/* Theme Toggle */}
       <div className="absolute top-4 right-4 z-50">
         <ThemeToggle />
@@ -18,15 +18,19 @@ const Index = () => {
       <HeroSection />
       
       {/* Exam Countdown Section */}
-      <div id="countdown">
+      <div id="countdown" className="bg-gray-50 dark:bg-gray-900">
         <CountdownTracker />
       </div>
       
       {/* Subject Tracker Section */}
-      <SubjectTracker />
+      <div className="dark:bg-gray-950">
+        <SubjectTracker />
+      </div>
       
       {/* Progress Entry Section */}
-      <ProgressEntry />
+      <div className="bg-gray-50 dark:bg-gray-900">
+        <ProgressEntry />
+      </div>
       
       {/* Footer */}
       <footer className="bg-gray-50 dark:bg-gray-900 py-8 text-center text-gray-500 dark:text-gray-400 text-sm">
