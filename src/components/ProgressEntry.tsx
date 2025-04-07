@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
@@ -48,16 +48,44 @@ interface ProgressEntry {
   notes: string;
 }
 
+const PROGRESS_ENTRIES_STORAGE_KEY = 'studyTrackerProgressEntries';
+
 const ProgressEntry: React.FC = () => {
   const { subjects } = useSubjects();
   
-  const [entries, setEntries] = useState<ProgressEntry[]>([]);
+  // Initialize entries from localStorage
+  const [entries, setEntries] = useState<ProgressEntry[]>(() => {
+    try {
+      const storedEntries = localStorage.getItem(PROGRESS_ENTRIES_STORAGE_KEY);
+      if (storedEntries) {
+        const parsedEntries = JSON.parse(storedEntries);
+        return parsedEntries.map((entry: any) => ({
+          ...entry,
+          date: new Date(entry.date)
+        }));
+      }
+      return [];
+    } catch (error) {
+      console.error('Error loading progress entries from localStorage:', error);
+      return [];
+    }
+  });
+
   const [showEntryForm, setShowEntryForm] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedSubject, setSelectedSubject] = useState('');
   const [hoursSpent, setHoursSpent] = useState(1);
   const [progressPercentage, setProgressPercentage] = useState(50);
   const [notes, setNotes] = useState('');
+  
+  // Save entries to localStorage whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem(PROGRESS_ENTRIES_STORAGE_KEY, JSON.stringify(entries));
+    } catch (error) {
+      console.error('Error saving progress entries to localStorage:', error);
+    }
+  }, [entries]);
   
   const handleSubmit = () => {
     if (!selectedSubject) {
