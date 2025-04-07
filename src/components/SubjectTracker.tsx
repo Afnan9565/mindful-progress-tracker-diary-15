@@ -23,7 +23,7 @@ import { Label } from '@/components/ui/label';
 import { Plus, Edit, Book } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { toast } from '@/components/ui/sonner';
+import { toast } from '@/lib/toast';
 import { motion } from 'framer-motion';
 
 interface Subject {

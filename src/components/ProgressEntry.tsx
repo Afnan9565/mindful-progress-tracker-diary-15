@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Calendar as CalendarIcon, Book, Check } from 'lucide-react';
+import { Calendar as CalendarIcon, Book, Check, Edit } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -28,7 +28,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Slider } from '@/components/ui/slider';
-import { toast } from "@/components/ui/sonner";
+import { toast } from '@/lib/toast';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
