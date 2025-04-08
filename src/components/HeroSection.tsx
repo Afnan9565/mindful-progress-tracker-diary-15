@@ -1,7 +1,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { ChevronRight, BookOpen } from "lucide-react"
+import { ChevronRight, BookOpen, Github } from "lucide-react"
 
 interface HeroSectionProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string
@@ -58,14 +58,14 @@ const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
   (
     {
       className,
-      title = "Track Your Learning Journey",
+      title = "View my GitHub Profile",
       subtitle = {
         regular: "Monitor your progress, track exam countdowns, and ",
         gradient: "maintain a personal diary of your achievements",
       },
       description = "Take control of your learning journey by monitoring your progress, tracking exam countdowns, and maintaining a personal diary of your achievements as you improve each day.",
-      ctaText = "Start Tracking",
-      ctaHref = "#countdown",
+      ctaText = "GitHub Profile",
+      ctaHref = "https://github.com/Afnan9565",
       secondaryCTAText = "Add Study Log",
       secondaryCTAHref = "#progress",
       gridOptions,
@@ -107,9 +107,11 @@ const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
                   <div className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-white dark:bg-gray-950 text-xs font-medium backdrop-blur-3xl">
                     <a
                       href={ctaHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex rounded-full text-center group items-center w-full justify-center bg-gradient-to-tr from-lavender-300/20 via-lavender-400/30 to-transparent dark:from-lavender-300/5 dark:via-lavender-400/20 text-gray-900 dark:text-white border-input border-[1px] hover:bg-gradient-to-tr hover:from-lavender-300/30 hover:via-lavender-400/40 hover:to-transparent dark:hover:from-lavender-300/10 dark:hover:via-lavender-400/30 transition-all sm:w-auto py-4 px-10"
                     >
-                      {ctaText}
+                      <Github className="mr-2 h-4 w-4" /> {ctaText}
                     </a>
                   </div>
                 </span>
