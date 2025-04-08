@@ -30,7 +30,7 @@ const Index = () => {
         </div>
         
         {/* Progress Entry Section */}
-        <div className="bg-gray-50 dark:bg-gray-900 relative z-10">
+        <div id="progress" className="bg-gray-50 dark:bg-gray-900 relative z-10">
           <ProgressEntry />
         </div>
         

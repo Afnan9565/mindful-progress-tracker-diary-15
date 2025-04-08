@@ -1,7 +1,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, BookOpen } from "lucide-react"
 
 interface HeroSectionProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string
@@ -12,6 +12,8 @@ interface HeroSectionProps extends React.HTMLAttributes<HTMLDivElement> {
   description?: string
   ctaText?: string
   ctaHref?: string
+  secondaryCTAText?: string
+  secondaryCTAHref?: string
   gridOptions?: {
     angle?: number
     cellSize?: number
@@ -64,6 +66,8 @@ const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
       description = "Take control of your learning journey by monitoring your progress, tracking exam countdowns, and maintaining a personal diary of your achievements as you improve each day.",
       ctaText = "Start Tracking",
       ctaHref = "#countdown",
+      secondaryCTAText = "Add Study Log",
+      secondaryCTAHref = "#progress",
       gridOptions,
       ...props
     },
@@ -106,6 +110,19 @@ const HeroSection = React.forwardRef<HTMLDivElement, HeroSectionProps>(
                       className="inline-flex rounded-full text-center group items-center w-full justify-center bg-gradient-to-tr from-lavender-300/20 via-lavender-400/30 to-transparent dark:from-lavender-300/5 dark:via-lavender-400/20 text-gray-900 dark:text-white border-input border-[1px] hover:bg-gradient-to-tr hover:from-lavender-300/30 hover:via-lavender-400/40 hover:to-transparent dark:hover:from-lavender-300/10 dark:hover:via-lavender-400/30 transition-all sm:w-auto py-4 px-10"
                     >
                       {ctaText}
+                    </a>
+                  </div>
+                </span>
+                
+                {/* Add Study Log Button */}
+                <span className="relative inline-block overflow-hidden rounded-full p-[1.5px]">
+                  <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#7c3aed_50%,#E2CBFF_100%)]" />
+                  <div className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-white dark:bg-gray-950 text-xs font-medium backdrop-blur-3xl">
+                    <a
+                      href={secondaryCTAHref}
+                      className="inline-flex rounded-full text-center group items-center w-full justify-center bg-gradient-to-tr from-lavender-300/20 via-lavender-400/30 to-transparent dark:from-lavender-300/5 dark:via-lavender-400/20 text-gray-900 dark:text-white border-input border-[1px] hover:bg-gradient-to-tr hover:from-lavender-300/30 hover:via-lavender-400/40 hover:to-transparent dark:hover:from-lavender-300/10 dark:hover:via-lavender-400/30 transition-all sm:w-auto py-4 px-10"
+                    >
+                      <BookOpen className="mr-2 h-4 w-4" /> {secondaryCTAText}
                     </a>
                   </div>
                 </span>
