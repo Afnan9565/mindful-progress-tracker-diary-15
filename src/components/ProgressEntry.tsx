@@ -48,6 +48,11 @@ interface ProgressEntry {
   notes: string;
 }
 
+// Group entries by date
+interface GroupedEntries {
+  [key: string]: ProgressEntry[];
+}
+
 const PROGRESS_ENTRIES_STORAGE_KEY = 'studyTrackerProgressEntries';
 
 const ProgressEntry: React.FC = () => {
@@ -86,6 +91,27 @@ const ProgressEntry: React.FC = () => {
       console.error('Error saving progress entries to localStorage:', error);
     }
   }, [entries]);
+
+  // Group entries by date
+  const groupEntriesByDate = (entries: ProgressEntry[]): GroupedEntries => {
+    // First sort entries by date (newest first)
+    const sortedEntries = [...entries].sort((a, b) => 
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+    
+    // Then group by formatted date
+    return sortedEntries.reduce((groups: GroupedEntries, entry) => {
+      const dateKey = format(new Date(entry.date), 'yyyy-MM-dd');
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
+      }
+      groups[dateKey].push(entry);
+      return groups;
+    }, {});
+  };
+  
+  // Get sorted and grouped entries
+  const groupedEntries = groupEntriesByDate(entries);
   
   const handleSubmit = () => {
     if (!selectedSubject) {
@@ -278,71 +304,84 @@ const ProgressEntry: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <div className="space-y-6">
-            {entries.map((entry, index) => (
-              <motion.div 
-                key={entry.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-              >
-                <Card className="card-hover dark:bg-gray-800 dark:border-gray-700">
-                  <CardHeader className="pb-2">
-                    <div className="flex justify-between items-center">
-                      <CardTitle className="text-xl dark:text-gray-200">{entry.subjectName}</CardTitle>
-                      <div className="flex items-center">
-                        <span className="text-sm text-gray-500 dark:text-gray-400 mr-2">{format(entry.date, "PP")}</span>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          onClick={() => deleteEntry(entry.id)} 
-                          className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
-                          type="button"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Hours Spent</h4>
-                        <p className="text-2xl font-bold dark:text-gray-200">{entry.hoursSpent}h</p>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Progress</h4>
-                        <div className="flex items-center space-x-2">
-                          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-                            <div 
-                              className="bg-gradient-to-r from-lavender-400 to-lavender-600 dark:from-lavender-500 dark:to-lavender-700 h-2.5 rounded-full" 
-                              style={{ width: `${entry.progressPercentage}%` }}
-                            ></div>
+          <div className="space-y-8">
+            {Object.entries(groupedEntries).map(([dateKey, dateEntries], groupIndex) => (
+              <div key={dateKey} className="space-y-4">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: groupIndex * 0.1 }}
+                >
+                  <h3 className="text-xl font-semibold mb-3 pb-2 border-b border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300">
+                    {format(new Date(dateEntries[0].date), 'EEEE, MMMM d, yyyy')}
+                  </h3>
+                </motion.div>
+                
+                {dateEntries.map((entry, index) => (
+                  <motion.div 
+                    key={entry.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: (groupIndex * 0.1) + (index * 0.05) }}
+                  >
+                    <Card className="card-hover dark:bg-gray-800 dark:border-gray-700">
+                      <CardHeader className="pb-2">
+                        <div className="flex justify-between items-center">
+                          <CardTitle className="text-xl dark:text-gray-200">{entry.subjectName}</CardTitle>
+                          <div className="flex items-center">
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              onClick={() => deleteEntry(entry.id)} 
+                              className="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
+                              type="button"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
-                          <span className="text-sm font-medium dark:text-gray-300">{entry.progressPercentage}%</span>
                         </div>
-                      </div>
-                      <div className="md:text-right">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-                          type="button"
-                        >
-                          <Edit className="h-4 w-4 mr-1" /> Edit
-                        </Button>
-                      </div>
-                    </div>
-                    
-                    {entry.notes && (
-                      <div className="mt-4">
-                        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Notes</h4>
-                        <p className="text-gray-600 dark:text-gray-300">{entry.notes}</p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </motion.div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                          <div>
+                            <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Hours Spent</h4>
+                            <p className="text-2xl font-bold dark:text-gray-200">{entry.hoursSpent}h</p>
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400">Progress</h4>
+                            <div className="flex items-center space-x-2">
+                              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                                <div 
+                                  className="bg-gradient-to-r from-lavender-400 to-lavender-600 dark:from-lavender-500 dark:to-lavender-700 h-2.5 rounded-full" 
+                                  style={{ width: `${entry.progressPercentage}%` }}
+                                ></div>
+                              </div>
+                              <span className="text-sm font-medium dark:text-gray-300">{entry.progressPercentage}%</span>
+                            </div>
+                          </div>
+                          <div className="md:text-right">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+                              type="button"
+                            >
+                              <Edit className="h-4 w-4 mr-1" /> Edit
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {entry.notes && (
+                          <div className="mt-4">
+                            <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Notes</h4>
+                            <p className="text-gray-600 dark:text-gray-300">{entry.notes}</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
             ))}
           </div>
         )}
