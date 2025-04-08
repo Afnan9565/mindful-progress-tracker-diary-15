@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,12 +21,40 @@ interface Exam {
   date: Date;
 }
 
+const LOCAL_STORAGE_KEY = 'studyTrackerExams';
+
 const CountdownTracker: React.FC = () => {
   const [exams, setExams] = useState<Exam[]>([]);
   const [newExamName, setNewExamName] = useState('');
   const [newExamDate, setNewExamDate] = useState<Date | undefined>(undefined);
   const [isAddingExam, setIsAddingExam] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+  // Load exams from localStorage on component mount
+  useEffect(() => {
+    const storedExams = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (storedExams) {
+      try {
+        // Parse the stored JSON and convert date strings back to Date objects
+        const parsedExams = JSON.parse(storedExams).map((exam: any) => ({
+          ...exam,
+          date: new Date(exam.date)
+        }));
+        setExams(parsedExams);
+      } catch (error) {
+        console.error('Error loading exams from localStorage:', error);
+      }
+    }
+  }, []);
+
+  // Save exams to localStorage whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(exams));
+    } catch (error) {
+      console.error('Error saving exams to localStorage:', error);
+    }
+  }, [exams]);
 
   const addExam = () => {
     if (newExamName && newExamDate) {
